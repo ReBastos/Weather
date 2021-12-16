@@ -3,7 +3,7 @@ import './App.css';
 import Temperature from './components/Temperature';
 
 const api = {
-  key: 'aca47f15695cd58e099a5d0aa14fa926',
+  key: '647d62fd8ff8eb1b93aa0e3ab541f3db',
   base: 'https://api.openweathermap.org/data/2.5/'
 }
 
@@ -13,8 +13,8 @@ function App() {
   const [tempo, setTempo] =useState({});
 
   const search = async evt => {
-    if (evt.key == 'Enter') {
-      const response = fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`);
+    if (evt.key === 'Enter') {
+      const response = await fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`);
       const tempoJson = await response.json();
       setTempo(tempoJson);
       setQuery('');
@@ -23,7 +23,7 @@ function App() {
 
   return (
     <>
-    <div className='app'>
+    <div className={tempo.main ? ((tempo.main.temp > 16) ? "app warm" : "app") : "app"}>
       <main>
         <div className='search-box'>
           <input 
@@ -31,15 +31,18 @@ function App() {
           className='search-bar'
           placeholder='Pesquisar...' 
           onKeyPress={search}
+          onChange={e => setQuery(e.target.value)}
           />
           
         </div>
+        {(typeof tempo.main != "undefined") && (
         <Temperature
-        cidade = {tempo.name}
-        pais={tempo.sys.country}
+        city = {tempo.name}
+        country ={tempo.sys.country}
         temperature={tempo.main.temp}
         weather={tempo.weather[0].main}
         />
+        )}
       </main>
     </div>
     </>
